@@ -1,0 +1,208 @@
+/* =====================================================================
+   班级智管 ClassMaster —— macOS 27「Golden Gate」Liquid Glass 专属皮肤
+   ---------------------------------------------------------------------
+   仅在 html[data-os="mac"] 下生效，完全不影响 Windows 版。
+   设计要点（依据 macOS 27 Golden Gate 官方设计调整）：
+     1. 贴边侧边栏（取消悬浮/多余阴影），增强活动窗口视觉区分
+     2. 彩色导航图标回归，帮助快速定位功能入口
+     3. 统一窗口/控件圆角半径（不再随元素动态变化）
+     4. 半透明毛玻璃材质（Liquid Glass），更暗边缘 + 更亮高光建立景深
+     5. 标题栏红绿灯安全区（hiddenInset 时左上留出空间）
+     6. 工具栏增加明确分隔线，文字标题与控制按钮分组更清晰
+   ===================================================================== */
+
+/* ---------- 变量覆盖：更暗边缘 / 更亮高光 ---------- */
+html[data-os="mac"] {
+  --radius-sm: 9px;
+  --radius: 13px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+
+  /* Liquid Glass 统一圆角半径（macOS 27 全系统标准化） */
+  --lg-radius: 18px;
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.30), 0 0 0 .5px rgba(255,255,255,.05);
+  --shadow: 0 10px 30px rgba(0,0,0,.42), 0 0 0 .5px rgba(255,255,255,.06);
+  --shadow-lg: 0 28px 70px rgba(0,0,0,.55), 0 0 0 .5px rgba(255,255,255,.07);
+
+  /* 顶部标题栏高度（与红绿灯区对齐） */
+  --topbar-h: 52px;
+}
+
+/* 深色主题下的玻璃层次：更暗边缘 + 更亮高光 */
+html[data-os="mac"] body[data-theme="dark"] {
+  --bg-0: #0a0d16;
+  --bg-1: rgba(22, 27, 42, .72);
+  --bg-2: rgba(30, 37, 56, .66);
+  --bg-3: rgba(40, 49, 72, .62);
+  --bg-4: rgba(52, 63, 90, .60);
+  --line: rgba(255, 255, 255, .085);
+  --line-2: rgba(255, 255, 255, .14);
+}
+/* 浅色主题下的玻璃层次 */
+html[data-os="mac"] body[data-theme="light"] {
+  --bg-0: #eef1f8;
+  --bg-1: rgba(255, 255, 255, .74);
+  --bg-2: rgba(255, 255, 255, .60);
+  --bg-3: rgba(243, 246, 252, .66);
+  --bg-4: rgba(233, 238, 248, .72);
+  --line: rgba(20, 35, 80, .10);
+  --line-2: rgba(20, 35, 80, .16);
+}
+
+/* 让窗口背景透出系统毛玻璃（vibrancy）；渲染进程铺一层壁纸感渐变 */
+html[data-os="mac"], html[data-os="mac"] body {
+  background: transparent !important;
+}
+html[data-os="mac"] #app {
+  background:
+    radial-gradient(1100px 620px at 12% -8%, rgba(91,131,247,.20), transparent 60%),
+    radial-gradient(900px 560px at 108% 8%, rgba(139,92,246,.16), transparent 62%),
+    radial-gradient(1000px 700px at 50% 118%, rgba(6,182,212,.10), transparent 60%);
+}
+html[data-os="mac"] body[data-theme="light"] #app {
+  background:
+    radial-gradient(1100px 620px at 12% -8%, rgba(91,131,247,.16), transparent 60%),
+    radial-gradient(900px 560px at 108% 8%, rgba(139,92,246,.13), transparent 62%),
+    radial-gradient(1000px 700px at 50% 118%, rgba(6,182,212,.10), transparent 60%);
+}
+
+/* ---------- 侧边栏：贴边 + 毛玻璃 ---------- */
+html[data-os="mac"] .sidebar {
+  background: linear-gradient(180deg, var(--bg-1), var(--bg-0));
+  -webkit-backdrop-filter: saturate(180%) blur(26px);
+  backdrop-filter: saturate(180%) blur(26px);
+  border-right: 1px solid var(--line);
+  box-shadow: none;                 /* 贴边设计：取消多余阴影 */
+}
+html[data-os="mac"] body[data-theme="light"] .sidebar {
+  background: linear-gradient(180deg, rgba(255,255,255,.80), rgba(255,255,255,.62));
+}
+
+/* 顶部品牌区留出红绿灯安全区 */
+html[data-os="mac"] .brand {
+  padding-top: 46px;                /* 让开窗口红绿灯 */
+  -webkit-app-region: drag;         /* 品牌栏可拖拽移动窗口 */
+}
+html[data-os="mac"] .brand .brand-logo,
+html[data-os="mac"] .brand .brand-text,
+html[data-os="mac"] .brand .brand-sub { -webkit-app-region: no-drag; }
+
+/* ---------- 导航：彩色图标回归（macOS 27 恢复彩色侧边栏图标） ---------- */
+html[data-os="mac"] .nav-item svg { stroke-width: 1.85; }
+html[data-os="mac"] .nav-item[data-view="dashboard"] svg { color: #5b83f7; }
+html[data-os="mac"] .nav-item[data-view="students"] svg  { color: #34d399; }
+html[data-os="mac"] .nav-item[data-view="grades"] svg    { color: #fbbf24; }
+html[data-os="mac"] .nav-item[data-view="seating"] svg   { color: #f472b6; }
+html[data-os="mac"] .nav-item[data-view="points"] svg    { color: #fb923c; }
+html[data-os="mac"] .nav-item[data-view="membership"] svg { color: #22d3ee; }
+html[data-os="mac"] .nav-item[data-view="lan"] svg       { color: #a78bfa; }
+html[data-os="mac"] .nav-item[data-view="settings"] svg  { color: #94a3b8; }
+/* 选中态保持高亮白，避免彩色与底色冲突 */
+html[data-os="mac"] .nav-item.active svg { color: #fff !important; }
+
+/* 侧边栏选中态：更亮的玻璃高光 + 更暗边缘 */
+html[data-os="mac"] .nav-item.active {
+  background: linear-gradient(96deg, rgba(59,92,232,.30), rgba(139,92,246,.16));
+  border-color: rgba(255,255,255,.14);
+  box-shadow:
+    inset 0 .5px 0 rgba(255,255,255,.18),
+    0 2px 10px rgba(0,0,0,.22);
+}
+
+/* ---------- 顶栏：毛玻璃 + 明确分隔线 ---------- */
+html[data-os="mac"] .topbar {
+  background: var(--bg-1);
+  -webkit-backdrop-filter: saturate(180%) blur(22px);
+  backdrop-filter: saturate(180%) blur(22px);
+  border-bottom: 1px solid var(--line-2);   /* macOS 27 工具栏明确分隔线 */
+  -webkit-app-region: drag;
+}
+html[data-os="mac"] .topbar .icon-btn,
+html[data-os="mac"] .topbar .search-box,
+html[data-os="mac"] .topbar button,
+html[data-os="mac"] .topbar input { -webkit-app-region: no-drag; }
+html[data-os="mac"] .topbar-spacer { -webkit-app-region: drag; }
+
+/* ---------- 卡片：Liquid Glass 材质 ---------- */
+html[data-os="mac"] .card {
+  background: var(--bg-1);
+  -webkit-backdrop-filter: saturate(160%) blur(18px);
+  backdrop-filter: saturate(160%) blur(18px);
+  border: 1px solid var(--line);
+  border-radius: var(--lg-radius);
+  box-shadow:
+    inset 0 .5px 0 rgba(255,255,255,.10),
+    0 6px 22px rgba(0,0,0,.30);
+}
+html[data-os="mac"] body[data-theme="light"] .card {
+  box-shadow:
+    inset 0 .5px 0 rgba(255,255,255,.9),
+    0 6px 22px rgba(20,35,80,.10);
+}
+html[data-os="mac"] .card-head {
+  background: linear-gradient(180deg, rgba(255,255,255,.055), transparent);
+  border-bottom: 1px solid var(--line);
+}
+
+/* 统计卡同理 */
+html[data-os="mac"] .stat {
+  background: var(--bg-1);
+  -webkit-backdrop-filter: saturate(160%) blur(18px);
+  backdrop-filter: saturate(160%) blur(18px);
+  border-radius: var(--lg-radius);
+  box-shadow: inset 0 .5px 0 rgba(255,255,255,.10), 0 6px 22px rgba(0,0,0,.28);
+}
+
+/* ---------- 控件：统一圆角 + 玻璃质感 ---------- */
+html[data-os="mac"] .btn {
+  border-radius: 10px;
+  border-color: var(--line-2);
+  background: var(--bg-3);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+html[data-os="mac"] .btn:hover { border-color: rgba(255,255,255,.22); }
+html[data-os="mac"] .input,
+html[data-os="mac"] .select,
+html[data-os="mac"] .textarea {
+  border-radius: 10px;
+  background: var(--bg-2);
+}
+html[data-os="mac"] .seg { border-radius: 11px; }
+html[data-os="mac"] .search-box { border-radius: 10px; background: var(--bg-2); }
+html[data-os="mac"] .key-box { border-radius: 11px; }
+
+/* 弹窗：Liquid Glass */
+html[data-os="mac"] .modal {
+  border-radius: 22px;
+  background: var(--bg-1);
+  -webkit-backdrop-filter: saturate(180%) blur(30px);
+  backdrop-filter: saturate(180%) blur(30px);
+  border: 1px solid var(--line-2);
+  box-shadow:
+    inset 0 .5px 0 rgba(255,255,255,.14),
+    0 28px 80px rgba(0,0,0,.60);
+}
+html[data-os="mac"] .modal-mask { background: rgba(4,7,15,.55); }
+
+/* Toast */
+html[data-os="mac"] .toast {
+  border-radius: 13px;
+  -webkit-backdrop-filter: saturate(160%) blur(18px);
+  backdrop-filter: saturate(160%) blur(18px);
+}
+
+/* ---------- 侧边栏折叠：对齐 macOS 侧边栏习惯 ---------- */
+html[data-os="mac"] .sidebar.collapsed { width: 72px; flex-basis: 72px; }
+
+/* ---------- 滚动条：更贴近 macOS 细滚动条 ---------- */
+html[data-os="mac"] ::-webkit-scrollbar { width: 10px; height: 10px; }
+html[data-os="mac"] ::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,.18);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+html[data-os="mac"] ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.30); background-clip: padding-box; }
+html[data-os="mac"] body[data-theme="light"] ::-webkit-scrollbar-thumb { background: rgba(20,35,80,.22); background-clip: padding-box; }

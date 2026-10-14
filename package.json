@@ -1,0 +1,122 @@
+{
+  "name": "classmaster",
+  "productName": "班级智管-鸿升周老师",
+  "version": "1.2.0",
+  "description": "班级智管-鸿升周老师（ClassMaster）· 初中班级成绩分析与智能排座系统",
+  "main": "src/main/main.js",
+  "author": "鸿升中学周老师",
+  "license": "UNLICENSED",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder --win --x64",
+    "build:portable": "electron-builder --win portable --x64",
+    "build:nsis": "electron-builder --win nsis --x64",
+    "build:mac": "electron-builder --mac --arm64",
+    "build:mac-dir": "electron-builder --mac --arm64 --dir"
+  },
+  "devDependencies": {
+    "electron": "^33.4.11",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.classmaster.desktop",
+    "productName": "班级智管-鸿升周老师",
+    "copyright": "Copyright © 2026 ClassMaster",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "src/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "${productName}-${version}-${arch}.${ext}",
+      "icon": "build/icon.ico",
+      "publisherName": "鸿升中学周老师"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "班级智管-鸿升周老师",
+      "installerLanguages": [
+        "zh_CN"
+      ],
+      "language": "2052",
+      "artifactName": "${productName}-${version}-安装版.${ext}"
+    },
+    "portable": {
+      "artifactName": "${productName}-${version}-便携版.${ext}"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "zip",
+          "arch": [
+            "arm64"
+          ]
+        }
+      ],
+      "category": "public.app-category.education",
+      "icon": "build/icon-mac-1024.png",
+      "artifactName": "${productName}-${version}-macOS-${arch}.${ext}",
+      "identity": null,
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false,
+      "darkModeSupport": true,
+      "bundleVersion": "1.2.0",
+      "minimumSystemVersion": "14.0",
+      "extendInfo": {
+        "NSLocalNetworkUsageDescription": "班级智管需要访问本地网络，以在同一校园网内发现同事设备、收发消息与文件。",
+        "NSBonjourServices": [
+          "_classmaster._tcp",
+          "_classmaster._udp"
+        ]
+      }
+    },
+    "dmg": {
+      "artifactName": "${productName}-${version}-macOS-${arch}.${ext}",
+      "title": "${productName} ${version}",
+      "window": {
+        "width": 620,
+        "height": 360
+      },
+      "contents": [
+        {
+          "x": 160,
+          "y": 200,
+          "type": "file"
+        },
+        {
+          "x": 440,
+          "y": 200,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "xlsx": "^0.18.5"
+  }
+}

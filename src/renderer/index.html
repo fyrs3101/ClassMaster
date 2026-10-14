@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:;">
+<title>班级智管-鸿升周老师</title>
+<link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/macos.css">
+</head>
+<body data-theme="dark">
+
+<div id="app">
+  <!-- ============ 侧边栏 ============ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <img class="brand-logo" id="brandLogo" src="../../assets/logo.png" alt="Logo" title="点击更换软件 Logo">
+      <div>
+        <div class="brand-text">班级智管-鸿升周老师</div>
+        <div class="brand-sub">ClassMaster</div>
+      </div>
+    </div>
+
+    <nav class="nav" id="nav">
+      <div class="nav-group-title">教学管理</div>
+      <div class="nav-item" data-view="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+        <span class="nav-label">工作台</span>
+      </div>
+      <div class="nav-item" data-view="students">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span class="nav-label">学生管理</span>
+        <span class="nav-badge" id="badge-students">0</span>
+      </div>
+      <div class="nav-item" data-view="grades">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3v18h18"/><path d="M7 15l3.5-4 3 2.5L20 7"/><circle cx="20" cy="7" r="1.6"/></svg>
+        <span class="nav-label">成绩分析</span>
+      </div>
+      <div class="nav-item" data-view="seating">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        <span class="nav-label">智能排座</span>
+      </div>
+      <div class="nav-item" data-view="points">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2l2.9 6.3 6.85.9-5 4.72 1.25 6.78L12 17.6 5.99 20.7 7.25 13.9l-5-4.72 6.85-.9z"/></svg>
+        <span class="nav-label">积分管理</span>
+      </div>
+
+      <div class="nav-group-title">系统</div>
+      <div class="nav-item" data-view="membership">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2l8 3.5v6c0 5-3.4 8.8-8 10.5-4.6-1.7-8-5.5-8-10.5v-6z"/><path d="M9 12l2 2 4-4"/></svg>
+        <span class="nav-label">会员中心</span>
+      </div>
+      <div class="nav-item" data-view="lan">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="6" cy="6" r="2.4"/><circle cx="18" cy="6" r="2.4"/><circle cx="12" cy="18" r="2.4"/><path d="M7.6 7.6 11 16M16.4 7.6 13 16M8.4 6h7.2"/></svg>
+        <span class="nav-label">飞鸽传书</span>
+      </div>
+      <div class="nav-item" data-view="settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6h.09A1.65 1.65 0 0 0 10.09 3.09V3a2 2 0 1 1 4 0v.09A1.65 1.65 0 0 0 15 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9v.09a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span class="nav-label">设置</span>
+      </div>
+    </nav>
+
+    <div class="side-footer">
+      <div class="teacher-chip" id="teacherChip">
+        <img id="sideAvatar" class="avatar avatar-sm" alt="头像" hidden>
+        <div id="sideAvatarPh" class="avatar avatar-sm avatar-ph">师</div>
+        <div style="min-width:0">
+          <div class="tc-name" id="sideTeacherName">未设置姓名</div>
+          <div class="tc-sub">授课教师</div>
+        </div>
+      </div>
+      <div class="plan-card" id="planCard">
+        <div class="pc-top">
+          <span class="pc-name" id="pcName">试用版</span>
+          <span class="pc-tag" id="pcTag">TRIAL</span>
+        </div>
+        <div class="pc-desc" id="pcDesc">剩余 7 天 · 点击升级解锁全部功能</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============ 主区 ============ -->
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn" id="btnCollapse" title="收起侧边栏">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      </button>
+      <div>
+        <div class="page-title" id="pageTitle">工作台</div>
+        <div class="page-sub" id="pageSub">班级数据总览</div>
+      </div>
+      <div class="topbar-spacer"></div>
+
+      <div class="search-box" id="globalSearchBox">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input id="globalSearch" placeholder="搜索学生姓名…" autocomplete="off">
+      </div>
+
+      <button class="icon-btn" id="btnTheme" title="切换主题">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+      <button class="icon-btn" id="btnQuickImport" title="快速导入成绩表">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></svg>
+      </button>
+    </header>
+
+    <main class="content" id="content">
+      <!-- ========== 工作台 ========== -->
+      <section class="view" id="view-dashboard">
+        <div class="content-inner">
+          <div class="stat-grid" id="dashStats"></div>
+          <div class="grid-2-1 mb-16">
+            <div class="card">
+              <div class="card-head">
+                <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3v18h18"/><path d="M7 15l3.5-4 3 2.5L20 7"/></svg>各科平均分分布</h3>
+                <span class="spacer"></span>
+                <span class="ch-sub" id="dashExamName">—</span>
+              </div>
+              <div class="card-body"><div class="chart-box" id="dashSubjectChart"></div></div>
+            </div>
+            <div class="card">
+              <div class="card-head"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>成绩层次占比</h3></div>
+              <div class="card-body"><div class="chart-box" id="dashLevelChart"></div></div>
+            </div>
+          </div>
+          <div class="grid-2 mb-16">
+            <div class="card">
+              <div class="card-head"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2l3 6.5 7 .9-5.1 4.8 1.3 6.9L12 17.7 5.8 21.1l1.3-6.9L2 9.4l7-.9z"/></svg>总分排行榜 TOP 10</h3></div>
+              <div class="card-body" id="dashTopRank"></div>
+            </div>
+            <div class="card">
+              <div class="card-head"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>需要关注</h3><span class="spacer"></span><span class="ch-sub">单科薄弱 / 总分偏低</span></div>
+              <div class="card-body" id="dashWeak"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M13 2 3 14h8l-1 8 10-12h-8z"/></svg>快捷操作</h3></div>
+            <div class="card-body">
+              <div class="row wrap" style="gap:11px">
+                <button class="btn btn-primary" data-quick="import">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>导入成绩表
+                </button>
+                <button class="btn" data-quick="seat">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>一键智能排座
+                </button>
+                <button class="btn" data-quick="points">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2l2.9 6.3 6.85.9-5 4.72 1.25 6.78L12 17.6 5.99 20.7 7.25 13.9l-5-4.72 6.85-.9z"/></svg>积分加分
+                </button>
+                <button class="btn" data-quick="export">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5-5 5 5M12 5v12"/></svg>导出全部分析
+                </button>
+                <button class="btn" data-quick="sample">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l3 3 8-8"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>载入示例数据
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== 学生管理 ========== -->
+      <section class="view" id="view-students">
+        <div class="content-inner">
+          <div class="toolbar">
+            <button class="btn btn-primary" id="btnImportStudents">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>导入学生名单
+            </button>
+            <button class="btn" id="btnAddStudent">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>手动添加
+            </button>
+            <div class="seg" id="studentFilterSeg">
+              <button class="active" data-f="all">全部</button>
+              <button data-f="A">A 优秀</button>
+              <button data-f="B">B 良好</button>
+              <button data-f="C">C 中等</button>
+              <button data-f="D">D 待提升</button>
+            </div>
+            <span class="spacer"></span>
+            <button class="btn" id="btnExportStudents">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5-5 5 5M12 5v12"/></svg>导出
+            </button>
+            <button class="btn btn-danger" id="btnClearStudents">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>清空
+            </button>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>学生名单</h3>
+              <span class="spacer"></span>
+              <span class="ch-sub" id="studentCountTip">共 0 人</span>
+            </div>
+            <div class="card-body">
+              <div class="table-wrap" style="max-height:calc(100vh - 268px)">
+                <table class="data" id="studentTable">
+                  <thead>
+                    <tr>
+                      <th class="num" style="width:48px">序</th>
+                      <th data-sort="name">姓名 <span class="arrow">▲▼</span></th>
+                      <th data-sort="sid">学号 <span class="arrow">▲▼</span></th>
+                      <th data-sort="total" class="num">总分 <span class="arrow">▲▼</span></th>
+                      <th data-sort="rank" class="num">班次 <span class="arrow">▲▼</span></th>
+                      <th data-sort="total" class="num">校次 <span class="arrow">▲▼</span></th>
+                      <th data-sort="level">层次 <span class="arrow">▲▼</span></th>
+                      <th id="thSubjects">各科成绩</th>
+                      <th style="width:72px">操作</th>
+                    </tr>
+                  </thead>
+                  <tbody id="studentTbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== 成绩分析 ========== -->
+      <section class="view" id="view-grades">
+        <div class="content-inner">
+          <div class="toolbar">
+            <div class="seg" id="gradeModeSeg">
+              <button class="active" data-m="overview">总览</button>
+              <button data-m="subjects">学科详情</button>
+              <button data-m="trend">分数段分布</button>
+              <button data-m="compare">学生对比</button>
+            </div>
+            <span class="spacer"></span>
+            <button class="btn" id="btnGradeExportXlsx">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5-5 5 5M12 5v12"/></svg>导出 Excel
+            </button>
+            <button class="btn" id="btnGradeExportPdf">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8" rx="1"/></svg>导出 PDF
+            </button>
+          </div>
+
+          <div id="gradePane-overview">
+            <div class="stat-grid" id="gradeStats"></div>
+            <div class="grid-2 mb-16">
+              <div class="card">
+                <div class="card-head"><h3>各科平均分 / 最高分 / 最低分</h3></div>
+                <div class="card-body"><div class="chart-box" id="gradeSubjectChart"></div></div>
+              </div>
+              <div class="card">
+                <div class="card-head"><h3>总分分布直方图</h3></div>
+                <div class="card-body"><div class="chart-box" id="gradeTotalHist"></div></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-head"><h3>学科难度雷达</h3><span class="spacer"></span><span class="ch-sub">按得分率折算</span></div>
+              <div class="card-body"><div class="chart-box" id="gradeRadar" style="max-width:560px;margin:0 auto"></div></div>
+            </div>
+          </div>
+
+          <div id="gradePane-subjects" class="hidden"></div>
+          <div id="gradePane-trend" class="hidden"></div>
+          <div id="gradePane-compare" class="hidden"></div>
+        </div>
+      </section>
+
+      <!-- ========== 智能排座 ========== -->
+      <section class="view" id="view-seating">
+        <div class="content-inner">
+          <div class="toolbar">
+            <div class="seg" id="seatModeSeg">
+              <button class="active" data-m="group">分组视图</button>
+              <button data-m="classroom">教室座位图</button>
+            </div>
+            <span class="sep" style="width:1px;height:22px;background:var(--line-2)"></span>
+            <div class="field" style="flex-direction:row;align-items:center;gap:7px">
+              <label style="white-space:nowrap">组数</label>
+              <input class="input input-sm" id="seatGroupCount" type="number" min="1" max="20" value="9" style="width:64px">
+              <label style="white-space:nowrap">每组</label>
+              <input class="input input-sm" id="seatGroupSize" type="number" min="2" max="12" value="6" style="width:64px">
+              <span class="muted">人</span>
+            </div>
+            <span class="sep" style="width:1px;height:22px;background:var(--line-2)"></span>
+            <div class="field" style="flex-direction:row;align-items:center;gap:7px">
+              <label style="white-space:nowrap">每层名额</label>
+              <input class="input input-sm" id="seatPerLevel" type="number" min="1" max="5" value="2" style="width:64px">
+            </div>
+            <span class="spacer"></span>
+            <button class="btn" id="btnSeatTemplate">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 15h6"/></svg>模板下载
+            </button>
+            <button class="btn" id="btnSeatImport">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>导入分组表
+            </button>
+            <button class="btn" id="btnSeatClassroom">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16M15 4v16"/></svg>生成教室座位
+            </button>
+            <button class="btn" id="btnSeatExport">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>导出智能分组
+            </button>
+            <button class="btn btn-primary" id="btnSeatAuto">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2 3 7l9 5 9-5-9-5z"/><path d="M3 12l9 5 9-5M3 17l9 5 9-5"/></svg>一键智能排座
+            </button>
+          </div>
+
+          <div class="seat-layout">
+            <div>
+              <div class="card mb-12">
+                <div class="card-head">
+                  <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span id="seatPaneTitle">分组视图</span></h3>
+                  <span class="spacer"></span>
+                  <span class="ch-sub">拖拽学生卡片可跨组调整 · 点击卡片右上按钮可置顶/移除</span>
+                  <button class="btn btn-sm btn-ghost" id="btnSeatToggleNames" title="显示/隐藏成绩">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div>
+                <div class="card-body">
+                  <div id="seatGroupPane">
+                    <div class="groups-grid" id="groupsGrid"></div>
+                    <div class="unassigned-pool" id="unassignedPool">
+                      <h4><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7h-9M14 17H5M17 3l3 4-3 4M7 21l-3-4 3-4"/></svg>未分组学生（拖到上面任意组）<span class="tag tag-gray" id="poolCount">0</span></h4>
+                      <div class="pool-list" id="poolList"></div>
+                    </div>
+                  </div>
+                  <div id="seatClassroomPane" class="hidden">
+                    <div class="podium">讲 台</div>
+                    <div class="classroom-seat" id="classroomSeat"></div>
+                    <div class="row wrap mt-16" style="gap:13px" id="classroomLegend"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="card mb-12">
+                <div class="card-head"><h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 3v18h18"/><path d="M7 16l3.5-4.5 3 2.5L20 8"/></svg>分组均衡度</h3></div>
+                <div class="card-body" id="balancePanel"></div>
+              </div>
+              <div class="card mb-12">
+                <div class="card-head"><h3>名额校验</h3></div>
+                <div class="card-body" id="seatValidate"></div>
+              </div>
+              <div class="card">
+                <div class="card-head"><h3>排座设置</h3></div>
+                <div class="card-body">
+                  <div class="field mb-12">
+                    <label>分配策略</label>
+                    <select class="select" id="seatStrategy">
+                      <option value="sbalance">蛇形均衡（推荐）—— 各组成绩最接近</option>
+                      <option value="snake">S 型蛇形分配 —— 传统梯队交叉</option>
+                      <option value="random">完全随机 —— 组间随机抽取</option>
+                      <option value="randomAvoid">随机 + 性别均衡</option>
+                    </select>
+                  </div>
+                  <div class="field mb-12">
+                    <label>层次划分依据</label>
+                    <select class="select" id="seatBasis">
+                      <option value="total">总分排名</option>
+                      <option value="avg">各科平均分排名</option>
+                      <option value="ratio">优秀生按比例均分</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label>小组命名方式</label>
+                    <select class="select" id="seatGroupName">
+                      <option value="num">第 1 组 / 第 2 组 …</option>
+                      <option value="star">追梦组 / 逐光组 …</option>
+                      <option value="keep">保持现有名称</option>
+                    </select>
+                  </div>
+                  <div class="row mt-16" style="gap:9px">
+                    <button class="btn btn-primary" style="flex:1" id="btnSeatApply">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 6 9 17l-5-5"/></svg>应用并保存
+                    </button>
+                    <button class="btn" id="btnSeatReset" title="清空分组">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== 积分管理 ========== -->
+      <section class="view" id="view-points">
+        <div class="content-inner">
+          <div class="stat-grid" id="pointsStats"></div>
+
+          <div class="toolbar">
+            <div class="seg" id="pointsModeSeg">
+              <button class="active" data-m="board">加分明细</button>
+              <button data-m="rank">积分排行</button>
+              <button data-m="records">记录流水</button>
+              <button data-m="rules">规则与兑换</button>
+            </div>
+            <span class="spacer"></span>
+            <div class="search-box" style="width:190px">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+              <input id="pointsSearch" placeholder="搜索学生…">
+            </div>
+            <button class="btn" id="btnPointsBatch">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></svg>批量加分
+            </button>
+            <button class="btn btn-primary" id="btnPointsAdd">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>记一笔
+            </button>
+          </div>
+
+          <div id="pointsPane-board"><div class="grid-3" id="pointsGrid" style="gap:13px"></div></div>
+          <div id="pointsPane-rank" class="hidden"><div class="card"><div class="card-head"><h3>积分排行榜</h3><span class="spacer"></span><span class="ch-sub" id="rankTip"></span></div><div class="card-body" id="pointsRankList"></div></div></div>
+          <div id="pointsPane-records" class="hidden"><div class="card"><div class="card-head"><h3>积分流水记录</h3><span class="spacer"></span><button class="btn btn-sm btn-danger" id="btnClearRecords">清空流水</button></div><div class="card-body" style="max-height:calc(100vh - 300px);overflow:auto" id="pointsRecords"></div></div></div>
+          <div id="pointsPane-rules" class="hidden"></div>
+        </div>
+      </section>
+
+      <!-- ========== 会员中心 ========== -->
+      <section class="view" id="view-membership">
+        <div class="content-inner">
+          <div class="card mb-16" style="background:linear-gradient(120deg, rgba(59,92,232,.18), rgba(139,92,246,.1))">
+            <div class="card-body">
+              <div class="row wrap" style="gap:22px;align-items:flex-start">
+                <div style="flex:1;min-width:250px">
+                  <div class="row mb-8" style="gap:9px">
+                    <span class="tag tag-blue" id="mcPlanTag">试用版</span>
+                    <span class="tag tag-gray" id="mcStatusTag">未激活</span>
+                  </div>
+                  <h2 style="font-size:22px;font-weight:800;margin-bottom:7px">班级智管-鸿升周老师 · 解锁全部教学能力</h2>
+                  <p class="muted" style="line-height:1.75;max-width:620px">
+                    一次付费，永久使用本机。包含学生管理、成绩分析、智能排座、积分管理四大模块，
+                    支持 Excel 多元导入、一键均衡分组、拖拽微调、多格式导出。
+                  </p>
+                </div>
+                <div style="min-width:280px">
+                  <div class="muted mb-8">本机机器码（点击复制）</div>
+                  <div class="key-box" id="machineCode" title="点击复制">加载中…</div>
+                  <div class="row mt-12" style="gap:8px">
+                    <input class="input input-sm" id="licenseInput" placeholder="粘贴销售方发来的激活码" style="flex:1">
+                    <button class="btn btn-sm btn-primary" id="btnActivate">激活</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pricing-grid mb-16" id="pricingGrid"></div>
+
+          <div class="card">
+            <div class="card-head"><h3>授权说明</h3></div>
+            <div class="card-body">
+              <div class="grid-2" style="gap:22px">
+                <div>
+                  <h4 style="font-size:13.5px;margin-bottom:9px">授权流程</h4>
+                  <ol class="muted" style="line-height:2;padding-left:19px">
+                    <li>选择需要购买的版本，点击卡片上的「申请授权」</li>
+                    <li>在弹窗中点击<b style="color:var(--txt-1)">「复制申请码」</b>，发送给销售方</li>
+                    <li>付款后收到销售方发来的<b style="color:var(--txt-1)">激活码</b></li>
+                    <li>粘贴到上方输入框，点击「激活」→ 全部功能立即解锁</li>
+                  </ol>
+                </div>
+                <div>
+                  <h4 style="font-size:13.5px;margin-bottom:9px">常见问题</h4>
+                  <div class="muted" style="line-height:1.95">
+                    <b style="color:var(--txt-1)">Q：换电脑还能用吗？</b><br>每份激活码绑定一台设备。换机请联系销售方办理迁移。<br>
+                    <b style="color:var(--txt-1)">Q：数据存在哪里？</b><br>全部保存在本机，不上传云端，绝对安全。
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== 设置 ========== -->
+      <section class="view" id="view-settings">
+        <div class="content-inner">
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-head"><h3>个人资料</h3></div>
+              <div class="card-body">
+                <div class="profile-row">
+                  <div class="avatar-stack">
+                    <img id="teacherAvatar" class="avatar" alt="教师头像" hidden>
+                    <div id="avatarPlaceholder" class="avatar avatar-ph">师</div>
+                  </div>
+                  <div style="flex:1;min-width:180px">
+                    <div class="muted" style="font-size:12.5px;line-height:1.8">头像会显示在左侧边栏，仅保存在本机数据文件中，不会上传到任何服务器。</div>
+                    <div class="row wrap mt-12" style="gap:9px">
+                      <button class="btn" id="btnAvatarUpload"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>上传头像</button>
+                      <button class="btn ghost" id="btnAvatarClear" hidden>恢复默认</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="profile-row mt-16">
+                  <div class="avatar-stack">
+                    <img id="logoPreview" class="brand-logo" style="width:48px;height:48px" src="../../assets/logo.png" alt="软件 Logo">
+                  </div>
+                  <div style="flex:1;min-width:180px">
+                    <div class="muted" style="font-size:12.5px;line-height:1.8">软件 Logo 显示在左侧左上角。支持 PNG / JPG 等图片，会等比缩放后仅保存在本机数据文件中。</div>
+                    <div class="row wrap mt-12" style="gap:9px">
+                      <button class="btn" id="btnLogoUpload"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>上传 Logo</button>
+                      <button class="btn ghost" id="btnLogoClear" hidden>恢复默认</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="field mt-16"><label>教师姓名</label><input class="input" id="setTeacherName" placeholder="如：周老师"></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-head"><h3>班级信息</h3></div>
+              <div class="card-body">
+                <div class="field mb-12"><label>学校名称</label><input class="input" id="setSchool" placeholder="如：实验中学"></div>
+                <div class="field mb-12"><label>班级名称</label><input class="input" id="setClassName" placeholder="如：八4班"></div>
+                <div class="field mb-12"><label>学期</label><input class="input" id="setSemester" placeholder="如：2026学年第一学期"></div>
+                <div class="field"><label>当前考试名称</label><input class="input" id="setExamName" placeholder="如：第一次月考"></div>
+                <button class="btn btn-primary mt-16" id="btnSaveMeta">保存班级信息</button>
+              </div>
+            </div>
+          </div>
+          <div class="grid-2 mt-16">
+            <div class="card">
+              <div class="card-head"><h3>数据与备份</h3></div>
+              <div class="card-body">
+                <div class="muted mb-12" style="line-height:1.85">
+                  所有数据保存在本机用户目录，不会上传云端。建议定期备份为 JSON 文件。
+                </div>
+                <div class="field mb-12">
+                  <label>数据文件位置</label>
+                  <div class="key-box" id="dataPath" style="font-size:11.5px">—</div>
+                </div>
+                <div class="row wrap" style="gap:9px">
+                  <button class="btn" id="btnOpenDataDir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>打开数据目录</button>
+                  <button class="btn" id="btnBackup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5-5 5 5M12 5v12"/></svg>备份数据</button>
+                  <button class="btn" id="btnRestore"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 8l5-5 5 5M12 3v12"/></svg>恢复备份</button>
+                  <button class="btn btn-danger" id="btnResetAll">清空所有数据</button>
+                </div>
+              </div>
+            </div>
+          </div>
+            <div class="card">
+              <div class="card-head"><h3>关于软件</h3></div>
+            <div class="card-body">
+              <div class="grid-3" style="gap:18px">
+                <div><div class="muted">软件名称</div><div style="font-weight:700;margin-top:3px">班级智管-鸿升周老师（ClassMaster）</div></div>
+                <div><div class="muted">版本</div><div style="font-weight:700;margin-top:3px" id="aboutVersion">1.2.0</div></div>
+                <div><div class="muted">运行环境</div><div style="font-weight:700;margin-top:3px" id="aboutRuntime">—</div></div>
+                <div><div class="muted">开发者</div><div style="font-weight:700;margin-top:3px">鸿升中学周老师</div></div>
+                <div><div class="muted">联系电话 / 微信</div><div style="font-weight:700;margin-top:3px" id="aboutContact">—</div></div>
+                <div><div class="muted">版权</div><div style="font-weight:700;margin-top:3px">© 2026 鸿升中学周老师</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- ========== 飞鸽传书 ========== -->
+      <section class="view" id="view-lan">
+        <div class="content-inner">
+          <div class="toolbar">
+            <div class="field" style="flex-direction:row;align-items:center;gap:7px">
+              <label style="white-space:nowrap">我的昵称</label>
+              <input class="input input-sm" id="lanMyName" style="width:150px" placeholder="如：周老师办公室">
+              <button class="btn btn-sm" id="lanApplyName">更新</button>
+            </div>
+            <span class="sep" style="width:1px;height:22px;background:var(--line-2)"></span>
+            <div class="field" style="flex-direction:row;align-items:center;gap:7px">
+              <label style="white-space:nowrap">手动添加</label>
+              <input class="input input-sm" id="lanAddIp" placeholder="对方 IP，如 192.168.1.20" style="width:180px">
+              <button class="btn btn-sm" id="lanAddBtn">探测</button>
+            </div>
+            <span class="spacer"></span>
+            <label class="lan-auto" title="开启后本软件随系统启动，便于同网段同事随时发现并给你发消息、传文件">
+              <input type="checkbox" id="lanAutoLaunch"> 开机自动启动
+            </label>
+            <span class="lan-status lan-off" id="lanStatus">未开启</span>
+            <button class="btn btn-sm btn-primary" id="lanToggle">开启飞鸽传书</button>
+          </div>
+
+          <div class="lan-grid">
+            <div class="card lan-peers-card">
+              <div class="card-head"><h3><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>同网段成员</h3><span class="spacer"></span><button class="btn btn-sm ghost" id="lanRescan" title="立即重新扫描同网段成员">刷新</button><span class="ch-sub" id="lanPeerCount">0 人在线</span></div>
+              <div class="card-body">
+                <div class="lan-peers" id="lanPeers"></div>
+                <div class="muted lan-empty" id="lanEmpty">尚未发现同网段内的其他「班级智管」用户。请确保所有电脑连入同一 Wi-Fi / 网段，并允许防火墙通过 37123、37124 端口（或点击右上「手动添加」按 IP 探测）。成员离线后会保留在列表中并标注「离线」，可在下方「飞鸽传书设置」中调整自动隐藏时长。</div>
+              </div>
+            </div>
+
+            <div class="card lan-chat-card">
+              <div class="card-head">
+                <h3 id="lanChatTitle">即时通讯</h3>
+                <span class="spacer"></span>
+                <span class="ch-sub" id="lanChatPeer">请选择左侧成员开始聊天或传输文件</span>
+              </div>
+              <div class="card-body lan-chat-body">
+                <div class="lan-msgs" id="lanMsgs"><div class="lan-placeholder">选择一位在线成员，即可发送文字、传输文件（支持文件夹与大文件断点续传）。</div></div>
+                <div class="lan-input-row">
+                  <input class="input" id="lanInput" placeholder="输入消息，回车发送…" disabled>
+                  <button class="btn btn-primary" id="lanSend" disabled>发送</button>
+                  <button class="btn" id="lanFile" title="发送文件（单文件最大 6GB）" disabled>📎</button>
+                  <button class="btn" id="lanFolder" title="发送文件夹" disabled>📁</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="card lan-files-card">
+              <div class="card-head"><h3><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>文件传输记录</h3><span class="spacer"></span><span class="ch-sub" id="lanFileCount">0 条记录</span><button class="btn btn-sm ghost" id="lanOpenFolder">接收目录</button><button class="btn btn-sm ghost" id="lanClearFiles">清空记录</button></div>
+              <div class="card-body"><div class="muted" style="font-size:12.5px;margin-bottom:8px">接收到的文件自动保存到本机<b>「接收目录」</b>，可点上方「接收目录」直接打开；下表记录重启软件后仍可点击「打开」/「文件夹」直达文件。</div><div class="lan-files" id="lanFiles"><div class="muted">暂无文件传输记录。发送或接收文件后，记录会保存在这里，重启软件也不会丢失。</div></div></div>
+            </div>
+          </div>
+
+          <div class="card lan-settings-card" style="margin-top:14px">
+            <div class="card-head"><h3><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>飞鸽传书设置</h3><span class="spacer"></span><button class="btn btn-sm ghost" id="lanClearChat">清空当前会话</button></div>
+            <div class="card-body">
+              <div class="lan-set-row">
+                <div>
+                  <div class="lan-set-title">记录保留时间</div>
+                  <div class="muted" style="font-size:12.5px">聊天记录保存在本机，重启软件不会丢失；超过保留期的记录将自动清理。</div>
+                </div>
+                <select class="input input-sm" id="lanRetention" style="width:150px">
+                  <option value="half">半年</option>
+                  <option value="year">一年</option>
+                  <option value="forever" selected>永久</option>
+                </select>
+              </div>
+              <div class="lan-set-row" style="margin-top:14px;padding-top:14px;border-top:1px solid var(--line-2)">
+                <div>
+                  <div class="lan-set-title">离线成员自动隐藏</div>
+                  <div class="muted" style="font-size:12.5px">成员离线后仍会保留在列表中并标注「离线」。可在此设置多久之后自动从列表移除；默认<b>永不自动隐藏</b>。</div>
+                </div>
+                <select class="input input-sm" id="lanOfflineKeep" style="width:150px">
+                  <option value="unlimited" selected>永不自动隐藏</option>
+                  <option value="30s">离线 30 秒后</option>
+                  <option value="1d">离线 1 天后</option>
+                  <option value="7d">离线 7 天后</option>
+                  <option value="30d">离线 1 个月后</option>
+                </select>
+              </div>
+              <div class="lan-set-row" style="margin-top:14px;padding-top:14px;border-top:1px solid var(--line-2)">
+                <div>
+                  <div class="lan-set-title">关闭主窗口时</div>
+                  <div class="muted" style="font-size:12.5px">点右上角 × 时如何处理。选择<b>最小化到托盘</b>后，软件会在后台继续运行（同事仍能发现你、给你发消息与文件），点托盘图标即可唤回；选择<b>直接退出</b>则关闭即结束程序。</div>
+                </div>
+                <select class="input input-sm" id="lanCloseToTray" style="width:150px">
+                  <option value="tray" selected>最小化到托盘</option>
+                  <option value="quit">直接退出程序</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<!-- 拖拽幽灵 -->
+<div id="drag-ghost"></div>
+
+<!-- 弹窗 -->
+<div class="modal-mask" id="modalMask">
+  <div class="modal" id="modalBox">
+    <div class="modal-head">
+      <h3 id="modalTitle">标题</h3>
+      <button class="icon-btn" id="modalClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot" id="modalFoot"></div>
+  </div>
+</div>
+
+<!-- 导入向导 -->
+<div class="modal-mask" id="importMask">
+  <div class="modal wide" id="importBox">
+    <div class="modal-head">
+      <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>导入学生名单 / 成绩表</h3>
+      <button class="icon-btn" id="importClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    </div>
+    <div class="modal-body" id="importBody"></div>
+    <div class="modal-foot" id="importFoot"></div>
+  </div>
+</div>
+
+<div id="toast-wrap"></div>
+<div id="loading"><div class="spin"></div><div class="lt" id="loadingText">处理中…</div></div>
+
+<script src="js/vendor/xlsx.full.min.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/store.js"></script>
+<script src="js/analytics.js"></script>
+<script src="js/seating.js"></script>
+<script src="js/import.js"></script>
+<script src="js/sample-data.js"></script>
+<script src="js/app.js"></script>
+<script src="js/lan.js"></script>
+</body>
+</html>
