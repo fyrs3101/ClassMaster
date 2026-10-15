@@ -97,6 +97,23 @@ jobs:
         with:
           path: artifacts
 
+      - name: 整理产物为英文名（GitHub 资产名不支持中文，会被丢弃）
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          mkdir -p release-files
+          VER="${TAG#v}"
+          for f in artifacts/windows-artifacts/*安装版.exe; do
+            if [ -e "$f" ]; then mv "$f" "release-files/ClassMaster-$VER-Windows-Setup.exe"; fi
+          done
+          for f in artifacts/windows-artifacts/*便携版.exe; do
+            if [ -e "$f" ]; then mv "$f" "release-files/ClassMaster-$VER-Windows-Portable.exe"; fi
+          done
+          for f in artifacts/macos-artifacts/*.zip; do
+            if [ -e "$f" ]; then mv "$f" "release-files/ClassMaster-$VER-macOS-arm64.zip"; fi
+          done
+          ls -la release-files/
+
       - name: 创建 Release 并附加产物
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -104,9 +121,9 @@ jobs:
         run: |
           if gh release view "$TAG" >/dev/null 2>&1; then
             echo "Release $TAG 已存在，直接补充上传产物"
-            gh release upload "$TAG" artifacts/windows-artifacts/* artifacts/macos-artifacts/* --clobber
+            gh release upload "$TAG" release-files/* --clobber
           else
-            gh release create "$TAG" artifacts/windows-artifacts/* artifacts/macos-artifacts/* \
+            gh release create "$TAG" release-files/* \
               --title "班级智管 $TAG" \
               --generate-notes
           fi
