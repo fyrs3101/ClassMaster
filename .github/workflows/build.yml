@@ -89,6 +89,9 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: 检出仓库（gh release 需要 git 上下文）
+        uses: actions/checkout@v4
+
       - name: 下载全部产物
         uses: actions/download-artifact@v4
         with:
@@ -99,6 +102,11 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ github.ref_name }}
         run: |
-          gh release create "$TAG" artifacts/windows-artifacts/* artifacts/macos-artifacts/* \
-            --title "班级智管 $TAG" \
-            --generate-notes
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG 已存在，直接补充上传产物"
+            gh release upload "$TAG" artifacts/windows-artifacts/* artifacts/macos-artifacts/* --clobber
+          else
+            gh release create "$TAG" artifacts/windows-artifacts/* artifacts/macos-artifacts/* \
+              --title "班级智管 $TAG" \
+              --generate-notes
+          fi
