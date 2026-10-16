@@ -2,7 +2,8 @@
 /**
  * 飞鸽传书 渲染层逻辑测试（无 Electron，用轻量 DOM/CM 打桩）
  * 覆盖：开机自动开启 / 在线·离线成员显示与 30 秒隐藏 / 离线禁止发送 /
- *       文件记录持久化与打开 / 断点续传提示 / 音视频按钮已彻底移除
+ *       文件记录持久化与打开 / 断点续传提示 / 音视频按钮已彻底移除 /
+ *       拖拽发送：文件与文件夹拖入窗口即发（含 text/plain 与导入区避让）
  */
 const assert = require('assert');
 const fs = require('fs');
@@ -69,6 +70,7 @@ global.CM = {
   lanOn: (ev, cb) => { handlers[ev] = cb; return () => {}; },
   lanPickFile: async () => ({ canceled: false, path: '/tmp/x.txt' }),
   lanPickFolder: async () => ({ canceled: false, path: '/tmp/dir', name: 'dir' }),
+  getPathForFile: (f) => (f && f.__path) || '',
   lanSendFile: async () => ({}),
   lanSendFolder: async () => ({}),
   lanLoadChats: async () => ({ chats: disk.chats, retention: disk.retention, offlineKeep: disk.offlineKeep, closeToTray: disk.closeToTray }),
@@ -217,7 +219,93 @@ vm.runInThisContext(code, { filename: 'lan.js' });
   els.lanRescan._h.click();
   assert.ok(rescanCount > rescanBefore, '点击刷新应触发一次重扫');
 
-  console.log('✅ 飞鸽传书渲染层测试通过：在线/离线实时显示（默认永不隐藏）/ 可配置隐藏时长(30秒·1天·7天·1个月) / 离线提示 / 开机自动开启 / 新消息唤醒 / 文件记录持久化 / 断点续传提示 / 同 IP 去重 / 关闭最小化到托盘 / 手动刷新');
+  /* ---- 12) 拖拽发送：文件 / 文件夹拖入窗口即发 ---- */
+  const goCalls = [];
+  global.App.go = (v) => { goCalls.push(v); };
+  let sendFileCalls = [];
+  let sendFolderCalls = [];
+  global.CM.lanSendFile = async (peer, p) => { sendFileCalls.push([peer, p]); return {}; };
+  global.CM.lanSendFolder = async (peer, p) => { sendFolderCalls.push([peer, p]); return {}; };
+
+  /** 构造一次拖拽 drop 事件（files: [{name,__path}]；dirs: [{fullPath}]） */
+  function makeDropEvent(files, dirs, opts) {
+    const items = [];
+    (files || []).forEach((f) => items.push({
+      kind: 'file',
+      getAsFile: () => f,
+      webkitGetAsEntry: () => ({ isDirectory: false, isFile: true, file: (cb) => cb(f) })
+    }));
+    (dirs || []).forEach((d) => items.push({
+      kind: 'file',
+      getAsFile: () => null,
+      webkitGetAsEntry: () => ({ isDirectory: true, isFile: false, fullPath: d.fullPath })
+    }));
+    return {
+      target: (opts && opts.target) || { closest: () => null },
+      dataTransfer: {
+        types: (opts && opts.types) || ['Files'],
+        items,
+        files: (files || []),
+        dropEffect: 'none'
+      },
+      preventDefault() { this.prevented = true; }
+    };
+  }
+
+  // 12a) 未选中成员：拖入应提示先选成员，并切到飞鸽传书界面，不发送
+  toasts.length = 0; goCalls.length = 0; sendFileCalls = []; sendFolderCalls = [];
+  await global.LAN.handleDrop(makeDropEvent([{ name: 'a.txt', __path: '/tmp/a.txt' }]));
+  assert.strictEqual(sendFileCalls.length, 0, '未选中成员时不应发送');
+  assert.ok(toasts.some((t) => String(t.m).indexOf('选择一位成员') >= 0), '未选中成员应提示先选择成员');
+  assert.ok(goCalls.indexOf('lan') >= 0, '拖入时应切换到飞鸽传书界面');
+
+  // 12b) 选中成员后拖入文件：按真实路径发送
+  global.LAN.selectPeer('p1');
+  await global.LAN.handleDrop(makeDropEvent([{ name: 'a.txt', __path: '/tmp/a.txt' }]));
+  assert.strictEqual(sendFileCalls.length, 1, '拖入文件应触发一次发送');
+  assert.deepStrictEqual(sendFileCalls[0], ['p1', '/tmp/a.txt'], '应把文件真实路径发给当前成员');
+
+  // 12c) 拖入文件夹：取 entry.fullPath 并归一化 Windows 风格路径
+  await global.LAN.handleDrop(makeDropEvent([], [{ fullPath: '/C:/Users/t/资料' }]));
+  assert.strictEqual(sendFolderCalls.length, 1, '拖入文件夹应触发一次发送');
+  assert.deepStrictEqual(sendFolderCalls[0], ['p1', 'C:\\Users\\t\\资料'], 'Windows 风格 fullPath 应归一化为 C:\\...');
+  assert.ok(toasts.some((t) => String(t.m).indexOf('正在发送文件夹') >= 0), '发送文件夹应有提示');
+
+  // 12d) 文件 + 文件夹混合拖入：两项都发，并给出汇总提示
+  toasts.length = 0;
+  await global.LAN.handleDrop(makeDropEvent([{ name: 'b.txt', __path: '/tmp/b.txt' }], [{ fullPath: '/tmp/dir' }]));
+  assert.strictEqual(sendFileCalls.length, 2, '混合拖入时文件应发送');
+  assert.strictEqual(sendFolderCalls.length, 2, '混合拖入时文件夹应发送');
+  assert.ok(toasts.some((t) => String(t.m).indexOf('已开始发送 2 项') >= 0), '多项拖入应有汇总提示');
+
+  // 12e) 取不到真实路径：明确报错且不发送
+  toasts.length = 0;
+  await global.LAN.handleDrop(makeDropEvent([{ name: 'weird' }]));
+  assert.strictEqual(sendFileCalls.length, 2, '取不到路径时不应新增发送');
+  assert.ok(toasts.some((t) => String(t.m).indexOf('无法获取') >= 0), '取不到路径应提示改用按钮选择');
+
+  // 12f) 未开启飞鸽传书：拖入应提示先开启，不发送
+  toasts.length = 0;
+  await global.LAN.stop();
+  await global.LAN.handleDrop(makeDropEvent([{ name: 'a.txt', __path: '/tmp/a.txt' }], [{ fullPath: '/tmp/dir' }]));
+  assert.strictEqual(sendFileCalls.length, 2, '未开启时不应发送文件');
+  assert.strictEqual(sendFolderCalls.length, 2, '未开启时不应发送文件夹');
+  assert.ok(toasts.some((t) => String(t.m).indexOf('开启飞鸽传书') >= 0), '未开启应提示先开启');
+  await global.LAN.start();
+
+  // 12g) 排座等界面内部拖拽（text/plain）：不得触发发送
+  const plainEv = makeDropEvent([{ name: 'a.txt', __path: '/tmp/a.txt' }]);
+  plainEv.dataTransfer.types = ['text/plain'];
+  await global.LAN.handleDrop(plainEv);
+  assert.strictEqual(sendFileCalls.length, 2, 'text/plain 内部拖拽不应触发发送');
+
+  // 12h) 落在成绩导入区 .drop-zone 上：放行给导入区，不得被飞鸽传书拦截
+  const dzEv = makeDropEvent([{ name: 'a.txt', __path: '/tmp/a.txt' }]);
+  dzEv.target = { closest: (s) => (s === '.drop-zone' ? {} : null) };
+  await global.LAN.handleDrop(dzEv);
+  assert.strictEqual(sendFileCalls.length, 2, '成绩导入区的拖拽不应被飞鸽传书拦截');
+
+  console.log('✅ 飞鸽传书渲染层测试通过：在线/离线实时显示（默认永不隐藏）/ 可配置隐藏时长(30秒·1天·7天·1个月) / 离线提示 / 开机自动开启 / 新消息唤醒 / 文件记录持久化 / 断点续传提示 / 同 IP 去重 / 关闭最小化到托盘 / 手动刷新 / 拖拽发送文件与文件夹（含 text/plain 与成绩导入区避让）');
   // 清理：init() 注册了兜底重扫与离线倒计时定时器，测试结束需主动退出，避免进程挂起
   if (global.LAN && global.LAN.dispose) global.LAN.dispose();
   process.exit(0);

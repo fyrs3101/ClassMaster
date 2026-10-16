@@ -43,7 +43,9 @@
     closeToTray: true,      // 关闭主窗口时是否最小化到托盘（默认 true）
     listenersReady: false,
     uiRescanTimer: null,    // 渲染层兜底重扫定时器
-    offlineTimer: null      // 离线倒计时走秒定时器
+    offlineTimer: null,     // 离线倒计时走秒定时器
+    dropDepth: 0,           // 拖拽高亮深度计数（dragenter/dragleave 成对出现，防止闪烁）
+    windowDropReady: false  // 窗口级拖拽监听是否已绑定
   };
 
   /* ============================ 启动 / 停止 ============================ */
@@ -457,6 +459,124 @@
     await CM.lanSendFolder(S.activePeer, r.path);
   }
 
+  /* ==================== 拖拽发送（文件 / 文件夹拖入窗口即发） ==================== */
+  /** 切换聊天卡片高亮态（CSS .dropping 控制「松开鼠标即可发送」提示遮罩显隐） */
+  function setDropHint(on) {
+    const card = $('.lan-chat-card');
+    if (!card || !card.classList) return;
+    if (on) card.classList.add('dropping');
+    else card.classList.remove('dropping');
+  }
+
+  /** 切到飞鸽传书界面（拖入时若停留在其他界面，先切换过来给出反馈） */
+  function goLan() { try { if (App.go) App.go('lan'); } catch (e) {} }
+
+  /** 当前是否正处于飞鸽传书界面（决定拖拽经过时是否显示高亮） */
+  function onLanView() {
+    const v = $('#view-lan');
+    if (!v) return true; // 无该节点（测试 / 异常场景）时不拦截
+    try {
+      if (v.classList && typeof v.classList.contains === 'function') return v.classList.contains('active');
+    } catch (e) { /* 打桩环境的 classList 无 contains */ }
+    return /active/.test(v.className || '');
+  }
+
+  /** 是否携带文件 / 文件夹的拖拽（排座等界面内部拖拽用 text/plain，必须放行） */
+  function isFileDrag(dt) {
+    if (!dt || !dt.types) return false;
+    return Array.prototype.indexOf.call(dt.types, 'Files') >= 0;
+  }
+
+  /**
+   * 归一化目录条目路径：Chromium 在 Windows 下 entry.fullPath 形如 /C:/Users/...，
+   * 去掉前导斜杠并转回反斜杠，得到 fs 可直接使用的 C:\Users\...
+   */
+  function normalizeDropPath(p) {
+    if (!p) return '';
+    const m = /^\/([A-Za-z]:)(.*)$/.exec(p);
+    if (m) return (m[1] + m[2]).replace(/\//g, '\\');
+    return p;
+  }
+  function baseName(p) { return String(p || '').replace(/[\\/]+$/, '').split(/[\\/]/).pop() || ''; }
+
+  /**
+   * 窗口级拖拽处理：把文件 / 文件夹拖到窗口上即发送给当前成员。
+   * - 仅响应 dataTransfer.types 含 Files 的拖拽（排座拖拽为 text/plain，不受影响）
+   * - 落在成绩导入区 .drop-zone 上时放行（该区域有自己的导入逻辑）
+   * - 文件项经 webUtils.getPathForFile 取真实路径；目录项经 webkitGetAsEntry 取 fullPath
+   */
+  async function handleDrop(e) {
+    const dt = e && e.dataTransfer;
+    if (!isFileDrag(dt)) return; // 非文件拖拽（如排座）不处理
+    if (e.preventDefault) e.preventDefault();
+    S.dropDepth = 0;
+    setDropHint(false);
+    if (e.target && e.target.closest && e.target.closest('.drop-zone')) return; // 成绩导入区自治
+    if (!S.started) { goLan(); toast('请先开启飞鸽传书，再拖入文件发送', 'err'); return; }
+    if (!S.activePeer) { goLan(); toast('请先在左侧选择一位成员，再拖入文件发送', 'info', 3600); return; }
+    goLan();
+
+    // 同步取出条目（drop 事件分发结束后 items 即失效），目录与文件分开处理
+    const items = Array.from(dt.items || []);
+    const dirs = [];
+    const files = [];
+    for (const it of items) {
+      if (!it || it.kind !== 'file') continue;
+      let entry = null;
+      try { entry = it.webkitGetAsEntry ? it.webkitGetAsEntry() : null; } catch (err) { entry = null; }
+      if (entry && entry.isDirectory) { dirs.push(entry); continue; }
+      const f = it.getAsFile ? it.getAsFile() : null;
+      if (f) files.push(f);
+    }
+    // 兜底：个别环境 items 不可用时退化为 files
+    if (!dirs.length && !files.length) files.push(...Array.from(dt.files || []));
+
+    let sent = 0;
+    for (const f of files) {
+      const p = CM.getPathForFile ? CM.getPathForFile(f) : '';
+      if (!p) { toast('无法获取「' + (f.name || '该文件') + '」的路径，请点 📎 按钮选择发送', 'err'); continue; }
+      try { await CM.lanSendFile(S.activePeer, p); sent++; }
+      catch (err) { toast('发送「' + (f.name || '') + '」失败：' + (err && err.message ? err.message : err), 'err'); }
+    }
+    for (const en of dirs) {
+      const p = normalizeDropPath(en.fullPath || en.name || '');
+      if (!p) continue;
+      toast('正在发送文件夹「' + baseName(p) + '」…', 'info', 3000);
+      try { await CM.lanSendFolder(S.activePeer, p); sent++; }
+      catch (err) { toast('发送文件夹「' + baseName(p) + '」失败：' + (err && err.message ? err.message : err), 'err'); }
+    }
+    if (sent > 1) toast('已开始发送 ' + sent + ' 项（文件 / 文件夹），进度见下方「文件传输记录」', 'ok', 3600);
+  }
+
+  /**
+   * 绑定窗口级拖拽（仅一次）。
+   * dragover 必须 preventDefault，否则 Electron 会以默认行为直接打开拖入的文件。
+   */
+  function bindWindowDrop() {
+    if (S.windowDropReady || typeof global.addEventListener !== 'function') return;
+    S.windowDropReady = true;
+    const onOver = (e) => {
+      if (!isFileDrag(e.dataTransfer)) return;
+      if (e.preventDefault) e.preventDefault();
+      try { if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy'; } catch (err) {}
+      if (onLanView()) setDropHint(true);
+    };
+    global.addEventListener('dragover', onOver);
+    global.addEventListener('dragenter', (e) => {
+      if (!isFileDrag(e.dataTransfer)) return;
+      if (e.preventDefault) e.preventDefault();
+      S.dropDepth++;
+      if (onLanView()) setDropHint(true);
+    });
+    global.addEventListener('dragleave', (e) => {
+      if (!isFileDrag(e.dataTransfer)) return;
+      S.dropDepth = Math.max(0, S.dropDepth - 1);
+      if (S.dropDepth === 0) setDropHint(false);
+    });
+    global.addEventListener('drop', (e) => { handleDrop(e); });
+    global.addEventListener('dragend', () => { S.dropDepth = 0; setDropHint(false); });
+  }
+
   /* ============================ 事件监听（仅注册一次） ============================ */
   function registerListeners() {
     if (S.listenersReady) return;
@@ -495,6 +615,8 @@
   /* ============================ 初始化 / 渲染 ============================ */
   function init() {
     registerListeners();
+    // 窗口级拖拽发送：文件 / 文件夹拖到窗口上即发送给当前成员
+    bindWindowDrop();
     // 控件事件
     const t = $('#lanToggle'); if (t) t.onclick = toggle;
     const an = $('#lanApplyName'); if (an) an.onclick = applyName;
@@ -595,5 +717,5 @@
     if (S.offlineTimer) { clearInterval(S.offlineTimer); S.offlineTimer = null; }
   }
 
-  global.LAN = { init, render, start, stop, toggle, dispose };
+  global.LAN = { init, render, start, stop, toggle, dispose, selectPeer, handleDrop };
 })(window);

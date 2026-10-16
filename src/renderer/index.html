@@ -583,13 +583,18 @@
                 <span class="ch-sub" id="lanChatPeer">请选择左侧成员开始聊天或传输文件</span>
               </div>
               <div class="card-body lan-chat-body">
-                <div class="lan-msgs" id="lanMsgs"><div class="lan-placeholder">选择一位在线成员，即可发送文字、传输文件（支持文件夹与大文件断点续传）。</div></div>
+                <div class="lan-msgs" id="lanMsgs"><div class="lan-placeholder">选择一位在线成员，即可发送文字、传输文件；也可把文件 / 文件夹直接拖入本窗口发送（支持大文件断点续传）。</div></div>
                 <div class="lan-input-row">
                   <input class="input" id="lanInput" placeholder="输入消息，回车发送…" disabled>
                   <button class="btn btn-primary" id="lanSend" disabled>发送</button>
-                  <button class="btn" id="lanFile" title="发送文件（单文件最大 6GB）" disabled>📎</button>
-                  <button class="btn" id="lanFolder" title="发送文件夹" disabled>📁</button>
+                  <button class="btn" id="lanFile" title="发送文件（也可直接拖入窗口；单文件最大 6GB）" disabled>📎</button>
+                  <button class="btn" id="lanFolder" title="发送文件夹（也可直接拖入窗口）" disabled>📁</button>
                 </div>
+              </div>
+              <div class="lan-drop-hint" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></svg>
+                <b>松开鼠标即可发送</b>
+                <span>文件 / 文件夹将发送给当前对话成员</span>
               </div>
             </div>
 

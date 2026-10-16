@@ -2,7 +2,7 @@
 /**
  * 预加载脚本：在隔离上下文中暴露安全的 API 给渲染进程
  */
-const { contextBridge, ipcRenderer } = require('electron');
+const { contextBridge, ipcRenderer, webUtils } = require('electron');
 
 contextBridge.exposeInMainWorld('CM', {
   /* 数据 */
@@ -46,6 +46,11 @@ contextBridge.exposeInMainWorld('CM', {
   lanAddPeer: (ip) => ipcRenderer.invoke('lan:addPeer', ip),
   lanOpenIncoming: () => ipcRenderer.invoke('lan:openIncoming'),
   lanRescan: () => ipcRenderer.invoke('lan:rescan'),
+
+  /* 飞鸽传书：拖拽发送 —— 取拖入 File 对象的真实磁盘路径（Electron 33 已移除 File.path） */
+  getPathForFile: (file) => {
+    try { return webUtils.getPathForFile(file) || ''; } catch (e) { return ''; }
+  },
 
   /* 飞鸽传书：新消息提醒（通知 / 窗口置前 / 任务栏闪烁） */
   lanNotify: (payload) => ipcRenderer.invoke('lan:notify', payload),

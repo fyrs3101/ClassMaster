@@ -786,7 +786,7 @@ body[data-theme="light"] .tag-violet { color: var(--accent-600); }
   align-items: start;
 }
 .lan-peers-card { grid-area: peers; }
-.lan-chat-card { grid-area: chat; }
+.lan-chat-card { grid-area: chat; position: relative; }
 .lan-files-card { grid-area: files; }
 
 .lan-peers { display: flex; flex-direction: column; gap: 8px; max-height: calc(100vh - 300px); overflow: auto; }
@@ -823,6 +823,18 @@ body[data-theme="light"] .tag-violet { color: var(--accent-600); }
 
 .lan-input-row { display: flex; gap: 8px; align-items: center; }
 .lan-input-row .input { flex: 1; }
+
+/* 拖拽发送高亮：文件 / 文件夹拖到窗口上时，聊天卡片显示「松开鼠标即可发送」 */
+.lan-drop-hint {
+  position: absolute; inset: 7px; display: none; z-index: 6; pointer-events: none;
+  border: 2px dashed var(--brand-400); border-radius: var(--radius-lg);
+  background: rgba(59,92,232,.10);
+  color: var(--txt-1); text-align: center; padding: 20px; box-sizing: border-box;
+}
+.lan-drop-hint svg { color: var(--brand-400); opacity: .85; margin-bottom: 10px; }
+.lan-drop-hint b { display: block; font-size: 15px; }
+.lan-drop-hint span { display: block; font-size: 12.5px; color: var(--txt-3); margin-top: 4px; }
+.lan-chat-card.dropping .lan-drop-hint { display: grid; place-content: center; justify-items: center; }
 
 .lan-files { display: flex; flex-direction: column; gap: 10px; }
 .lan-file { display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 11px; background: var(--bg-3); }
