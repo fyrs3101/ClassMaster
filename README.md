@@ -7,7 +7,7 @@
 [![Build](https://github.com/fyrs3101/ClassMaster/actions/workflows/build.yml/badge.svg)](https://github.com/fyrs3101/ClassMaster/actions/workflows/build.yml)
 ![Platform](https://img.shields.io/badge/平台-Windows%20%7C%20macOS-blue)
 ![Electron](https://img.shields.io/badge/Electron-33.4-47848F)
-![Version](https://img.shields.io/badge/版本-1.2.0-brightgreen)
+![Version](https://img.shields.io/badge/版本-1.3.0-brightgreen)
 ![License](https://img.shields.io/badge/许可-私有商业软件-red)
 
 </div>
