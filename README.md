@@ -93,8 +93,6 @@ npm run build:mac     # macOS：arm64 zip
 
 ## 文档
 
-- [使用手册](使用手册.md) —— 完整功能使用说明
-- [销售方案](销售方案.md) —— 产品定位与授权流程
 - [macOS 安装说明](docs/macOS安装说明.md) —— macOS 首次打开权限设置
 
 ## 关于注册机

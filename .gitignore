@@ -21,6 +21,3 @@ Thumbs.db
 # 日志
 *.log
 npm-debug.log*
-
-# 注册机 app 本地符号链接（指向本机 node_modules，不入库）
-tools/注册机-app/node_modules
